@@ -12,4 +12,8 @@
     <Folder Include="PollAggregate\Queries\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PollBack.Shared\PollBack.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

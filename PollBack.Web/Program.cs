@@ -1,4 +1,9 @@
 using PollBack.Web.Controllers;
+using Microsoft.EntityFrameworkCore;
+using PollBack.Infrastructure.Data;
+using Autofac;
+using PollBack.Infrastructure;
+using Autofac.Extensions.DependencyInjection;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +14,19 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DbConntectionString"));
+});
+
 builder.Services.Configure<G>(builder.Configuration.GetSection("TEST"));
+
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+{
+    containerBuilder.RegisterModule(new InfrastructureModule());
+});
 
 WebApplication app = builder.Build();
 
