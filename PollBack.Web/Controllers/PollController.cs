@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PollBack.Infrastructure.Data.Interfaces;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using PollBack.Core.PollAggregate;
+using PollBack.Core.PollAggregate.Commands;
+using PollBack.Core.PollAggregate.Queries;
 
 namespace PollBack.Web.Controllers
 {
@@ -7,19 +10,29 @@ namespace PollBack.Web.Controllers
     [Route("api/[controller]")]
     public class PollController : ControllerBase
     {
-        private readonly IPollRepository pollRepository;
+        private readonly IMediator mediator;
 
-        public PollController(IPollRepository pollRepository)
+        public PollController(IMediator mediator)
         {
-            this.pollRepository = pollRepository;
+            this.mediator = mediator;
         }
 
         [HttpGet("[action]")]
         public async Task<IActionResult> GetManyAsync()
         {
-            IEnumerable<Core.PollAggregate.Poll>? data = await pollRepository.GetManyAsync();
+            GetAllPollsQuery? query = new();
 
-            return Ok(data);
+            IEnumerable<Poll>? response = await mediator.Send(query);
+
+            return Ok(response);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> CreateAsync(CreatePollCommand createPollCommand)
+        {
+            Poll? response = await mediator.Send(createPollCommand);
+
+            return Ok(response);
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using PollBack.Core.PollAggregate;
-using PollBack.Infrastructure.Data.Interfaces;
+﻿using PollBack.Core.Interfaces.Repositories;
+using PollBack.Core.PollAggregate;
 using PollBack.Shared.Data;
 
 namespace PollBack.Infrastructure.Data.Repositories

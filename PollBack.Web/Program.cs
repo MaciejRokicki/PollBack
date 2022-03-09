@@ -4,6 +4,9 @@ using PollBack.Infrastructure.Data;
 using Autofac;
 using PollBack.Infrastructure;
 using Autofac.Extensions.DependencyInjection;
+using MediatR;
+using PollBack.Core.PollAggregate.Handlers;
+using MediatR.Extensions.Autofac.DependencyInjection;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +28,10 @@ builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 {
+    containerBuilder.RegisterMediatR(typeof(Program).Assembly);
+
     containerBuilder.RegisterModule(new InfrastructureModule());
+    containerBuilder.RegisterModule(new CoreModule());
 });
 
 WebApplication app = builder.Build();

@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using PollBack.Infrastructure.Data.Interfaces;
+using PollBack.Core.Interfaces.Repositories;
 using PollBack.Infrastructure.Data.Repositories;
 
 namespace PollBack.Infrastructure
