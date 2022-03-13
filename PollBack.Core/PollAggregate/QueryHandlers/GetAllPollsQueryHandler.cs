@@ -2,7 +2,7 @@
 using PollBack.Core.Interfaces.Repositories;
 using PollBack.Core.PollAggregate.Queries;
 
-namespace PollBack.Core.PollAggregate.Handlers
+namespace PollBack.Core.PollAggregate.QueryHandlers
 {
     public class GetAllPollsQueryHandler : IRequestHandler<GetAllPollsQuery, IEnumerable<Poll>>
     {

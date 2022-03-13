@@ -2,7 +2,7 @@
 using PollBack.Core.Interfaces.Repositories;
 using PollBack.Core.PollAggregate.Commands;
 
-namespace PollBack.Core.PollAggregate.Handlers
+namespace PollBack.Core.PollAggregate.CommandHandlers
 {
     public class CreatePollCommandHandler : IRequestHandler<CreatePollCommand, Poll>
     {

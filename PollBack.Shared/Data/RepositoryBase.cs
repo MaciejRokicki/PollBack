@@ -12,7 +12,7 @@ namespace PollBack.Shared.Data
             this.ctxt = ctxt;
         }
 
-        public async Task<T> CreateAsync(T entity)
+        public virtual async Task<T> CreateAsync(T entity)
         {
             await ctxt
                 .Set<T>()
@@ -23,7 +23,7 @@ namespace PollBack.Shared.Data
             return entity;
         }
 
-        public async Task DeleteAsync(Expression<Func<T, bool>> expression)
+        public virtual async Task DeleteAsync(Expression<Func<T, bool>> expression)
         {
             T? entity = await GetAsync(expression);
 
@@ -37,13 +37,14 @@ namespace PollBack.Shared.Data
             }
         }
 
-        public async Task<T?> GetAsync(Expression<Func<T, bool>> expression) => await ctxt.Set<T>().SingleOrDefaultAsync(expression);
+        //TODO: pomyslec nad zrobieniem get'ow na select'ach
+        public virtual async Task<T?> GetAsync(Expression<Func<T, bool>> expression) => await ctxt.Set<T>().SingleOrDefaultAsync(expression);
 
-        public async Task<IEnumerable<T>> GetManyAsync() => await ctxt.Set<T>().ToListAsync();
+        public virtual async Task<IEnumerable<T>> GetManyAsync() => await ctxt.Set<T>().ToListAsync();
 
-        public async Task<IEnumerable<T>> GetManyAsync(Expression<Func<T, bool>> expression) => await ctxt.Set<T>().Where(expression).ToListAsync();
+        public virtual async Task<IEnumerable<T>> GetManyAsync(Expression<Func<T, bool>> expression) => await ctxt.Set<T>().Where(expression).ToListAsync();
 
-        public async Task<T> UpdateAsync(T entity)
+        public virtual async Task<T> UpdateAsync(T entity)
         {
             ctxt
                 .Set<T>()
@@ -54,7 +55,8 @@ namespace PollBack.Shared.Data
             return entity;
         }
 
-        public async Task<T?> UpdateAsync(Expression<Func<T, bool>> expression, T entity)
+        //TODO: sprawdzic czy sie to przyda
+        public virtual async Task<T?> UpdateAsync(Expression<Func<T, bool>> expression, T entity)
         {
             T? obj = await GetAsync(expression);
 

@@ -1,5 +1,6 @@
 ﻿using Autofac;
-using PollBack.Core.PollAggregate.Handlers;
+using PollBack.Core.Interfaces.Services;
+using PollBack.Core.Services;
 
 namespace PollBack.Infrastructure
 {
@@ -7,15 +8,27 @@ namespace PollBack.Infrastructure
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder
-                .RegisterType<GetAllPollsQueryHandler>()
-                .AsImplementedInterfaces()
-                .InstancePerDependency();
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
 
             builder
-                .RegisterType<CreatePollCommandHandler>()
-                .AsImplementedInterfaces()
-                .InstancePerDependency();
+                .RegisterType<EncryptionService>()
+                .As<IEncryptionService>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<JwtTokenService>()
+                .As<IJwtTokenService>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<AuthenticationService>()
+                .As<IAuthenticationService>()
+                .InstancePerLifetimeScope();
+
+            builder
+                .RegisterAssemblyTypes(assembly)
+                .Where(x => x.Name.EndsWith("Handler"))
+                .AsImplementedInterfaces();
         }
     }
 }

@@ -28,7 +28,9 @@ namespace PollBack.Infrastructure.Data.Configurations
                 .IsRequired();
 
             builder
-                .HasMany(x => x.Options);
+                .HasMany(x => x.Options)
+                .WithOne(x => x.Poll)
+                .HasForeignKey(x => x.PollId);
 
             builder
                 .ToTable("Polls");

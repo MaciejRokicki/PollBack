@@ -9,6 +9,11 @@ namespace PollBack.Infrastructure
         protected override void Load(ContainerBuilder builder)
         {
             builder
+                .RegisterType<UserRepository>()
+                .As<IUserRepository>()
+                .InstancePerLifetimeScope();
+
+            builder
                 .RegisterType<PollRepository>()
                 .As<IPollRepository>()
                 .InstancePerLifetimeScope();

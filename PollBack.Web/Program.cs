@@ -1,12 +1,12 @@
-using PollBack.Web.Controllers;
 using Microsoft.EntityFrameworkCore;
 using PollBack.Infrastructure.Data;
 using Autofac;
 using PollBack.Infrastructure;
 using Autofac.Extensions.DependencyInjection;
-using MediatR;
-using PollBack.Core.PollAggregate.Handlers;
 using MediatR.Extensions.Autofac.DependencyInjection;
+using PollBack.Shared.AppSettings;
+using PollBack.Web.Middlewares;
+using Microsoft.OpenApi.Models;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -15,14 +15,39 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(x =>
+{
+    x.SwaggerDoc("v1", new OpenApiInfo { Title = "title", Version = "v1" });
+    x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+    {
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    x.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        { 
+            new OpenApiSecurityScheme()
+            {
+                Reference = new OpenApiReference()
+                {
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            }, 
+            new string[] { }
+        }
+    });
+});
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbConntectionString"));
 });
 
-builder.Services.Configure<G>(builder.Configuration.GetSection("TEST"));
+builder.Services.Configure<SecuritySettings>(builder.Configuration.GetSection("SecuritySettings"));
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
@@ -48,5 +73,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<JwtMiddleware>();
 
 app.Run();

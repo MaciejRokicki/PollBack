@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PollBack.Core.PollAggregate;
 using PollBack.Core.PollAggregate.Commands;
 using PollBack.Core.PollAggregate.Queries;
+using PollBack.Web.Attributes;
 
 namespace PollBack.Web.Controllers
 {
@@ -17,6 +18,7 @@ namespace PollBack.Web.Controllers
             this.mediator = mediator;
         }
 
+        [JwtAuthorize]
         [HttpGet("[action]")]
         public async Task<IActionResult> GetManyAsync()
         {
@@ -28,7 +30,7 @@ namespace PollBack.Web.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> CreateAsync(CreatePollCommand createPollCommand)
+        public async Task<IActionResult> CreateAsync([FromBody] CreatePollCommand createPollCommand)
         {
             Poll? response = await mediator.Send(createPollCommand);
 
