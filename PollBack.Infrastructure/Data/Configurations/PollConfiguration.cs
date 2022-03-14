@@ -33,6 +33,11 @@ namespace PollBack.Infrastructure.Data.Configurations
                 .HasForeignKey(x => x.PollId);
 
             builder
+                .HasOne(x => x.User)
+                .WithMany(x => x.Polls)
+                .HasForeignKey(x => x.UserId);
+
+            builder
                 .ToTable("Polls");
         }
     }

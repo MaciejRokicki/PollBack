@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PollBack.Core.UserAggregate;
+using PollBack.Core.Entities;
 
 namespace PollBack.Infrastructure.Data.Configurations
 {

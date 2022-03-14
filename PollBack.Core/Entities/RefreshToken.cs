@@ -1,5 +1,4 @@
-﻿using PollBack.Core.UserAggregate;
-using PollBack.Shared;
+﻿using PollBack.Shared;
 
 namespace PollBack.Core.Entities;
 

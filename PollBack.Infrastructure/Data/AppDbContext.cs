@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PollBack.Core.UserAggregate;
 using PollBack.Core.Entities;
 using PollBack.Core.PollAggregate;
 using PollBack.Infrastructure.Data.Configurations;
@@ -14,6 +13,7 @@ namespace PollBack.Infrastructure.Data
         public DbSet<User> Users => Set<User>();
         public DbSet<Poll> Polls => Set<Poll>();
         public DbSet<PollOption> Options => Set<PollOption>();
+        public DbSet<PollOptionVote> OptionVotes => Set<PollOptionVote>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,6 +21,7 @@ namespace PollBack.Infrastructure.Data
             modelBuilder.ApplyConfiguration(new UserConfiguartion());
             modelBuilder.ApplyConfiguration(new PollConfiguration());
             modelBuilder.ApplyConfiguration(new PollOptionConfiguration());
+            modelBuilder.ApplyConfiguration(new PollOptionVoteConfiguration());
         }
     }
 }

@@ -1,18 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using PollBack.Core.Interfaces.Services;
 using PollBack.Core.Models;
+using PollBack.Web.ViewModels;
 
 namespace PollBack.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : ControllerBase
+    public class AuthenticationController : ControllerBase
     {
         private readonly IAuthenticationService authenticationService;
+        private readonly IMapper mapper;
 
-        public UserController(IAuthenticationService authenticationService)
+        public AuthenticationController(IAuthenticationService authenticationService, IMapper mapper)
         {
             this.authenticationService = authenticationService;
+            this.mapper = mapper;
         }
 
         [HttpPost("[action]")]
@@ -37,11 +41,13 @@ namespace PollBack.Web.Controllers
             {
                 signInRequest.IpAddress = GetIpAddress();
 
-                SignInResponse response = await authenticationService.SignInAsync(signInRequest);
+                SignInResponse signInResponse = await authenticationService.SignInAsync(signInRequest);
 
-                SetTokenCookie(response.RefreshToken);
+                SetTokenCookie(signInResponse.RefreshToken);
 
-                return Ok(response);
+                SignInResponseViewModel signInResponseViewModel = mapper.Map<SignInResponseViewModel>(signInResponse);
+
+                return Ok(signInResponseViewModel);
             }
             catch (Exception ex)
             {
@@ -52,30 +58,45 @@ namespace PollBack.Web.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> RefreshToken()
         {
-            string? refreshToken = Request.Cookies["refreshToken"];
+            try
+            {
+                string? refreshToken = Request.Cookies["refreshToken"];
 
-            if (refreshToken == null)
-                return BadRequest("Refresh token not found.");
+                if (refreshToken == null)
+                    return BadRequest("Refresh token not found.");
 
-            SignInResponse response = await authenticationService.RefreshTokenAsync(refreshToken, GetIpAddress());
+                SignInResponse signInResponse = await authenticationService.RefreshTokenAsync(refreshToken, GetIpAddress());
 
-            SetTokenCookie(response.RefreshToken);
+                SetTokenCookie(signInResponse.RefreshToken);
 
-            return Ok(response);
+                SignInResponseViewModel signInResponseViewModel = mapper.Map<SignInResponseViewModel>(signInResponse);
 
+                return Ok(signInResponseViewModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("[action]")]
         public async Task<IActionResult> RevokeToken(RevokeToken revokeToken)
         {
-            string? token = revokeToken.Token ?? Request.Cookies["refreshToken"];
+            try
+            {
+                string? token = revokeToken.Token ?? Request.Cookies["refreshToken"];
 
-            if (string.IsNullOrEmpty(token))
-                return BadRequest("Refresh token not found.");
+                if (string.IsNullOrEmpty(token))
+                    return BadRequest("Refresh token not found.");
 
-            await authenticationService.RevokeTokenAsync(token, GetIpAddress());
+                await authenticationService.RevokeTokenAsync(token, GetIpAddress());
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
@@ -87,7 +108,7 @@ namespace PollBack.Web.Controllers
             {
                 string? ip = HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString();
 
-                return ip != null ? ip : string.Empty;
+                return ip ?? string.Empty;
             }            
         }
 

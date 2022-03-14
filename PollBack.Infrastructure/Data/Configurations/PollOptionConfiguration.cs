@@ -16,10 +16,6 @@ namespace PollBack.Infrastructure.Data.Configurations
                 .IsRequired();
 
             builder
-                .Property(x => x.Votes)
-                .HasDefaultValue(0);
-
-            builder
                 .ToTable("PollOptions");
         }
     }

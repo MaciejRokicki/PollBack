@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using PollBack.Core.UserAggregate;
+using System.Security.Claims;
 
 namespace PollBack.Web.Attributes
 {
@@ -15,9 +15,9 @@ namespace PollBack.Web.Attributes
             if (allowAnonymous)
                 return;
 
-            User? user = (User?)context.HttpContext.Items["User"];
+            string? userId = context.HttpContext.User.FindFirstValue("UserId");
 
-            if (user == null)
+            if (userId == null)
                 context.Result = new JsonResult(new { }) { StatusCode = StatusCodes.Status401Unauthorized };
         }
     }

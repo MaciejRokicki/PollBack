@@ -1,4 +1,4 @@
-﻿using PollBack.Core.UserAggregate;
+﻿using PollBack.Core.Entities;
 using PollBack.Shared.Data;
 
 namespace PollBack.Core.Interfaces.Repositories

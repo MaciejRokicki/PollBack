@@ -33,7 +33,7 @@ namespace PollBack.Infrastructure.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2022, 3, 13, 16, 42, 37, 311, DateTimeKind.Utc).AddTicks(8473));
+                        .HasDefaultValue(new DateTime(2022, 3, 14, 13, 46, 0, 659, DateTimeKind.Utc).AddTicks(574));
 
                     b.Property<string>("CreatedByIp")
                         .IsRequired()
@@ -68,60 +68,7 @@ namespace PollBack.Infrastructure.Migrations
                     b.ToTable("RefreshTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PollBack.Core.PollAggregate.Poll", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("End")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDraft")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Question")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Polls", (string)null);
-                });
-
-            modelBuilder.Entity("PollBack.Core.PollAggregate.PollOption", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Option")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PollId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Votes")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PollId");
-
-                    b.ToTable("PollOptions", (string)null);
-                });
-
-            modelBuilder.Entity("PollBack.Core.UserAggregate.User", b =>
+            modelBuilder.Entity("PollBack.Core.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -142,13 +89,102 @@ namespace PollBack.Infrastructure.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("PollBack.Core.PollAggregate.Poll", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("End")
+                        .IsRequired()
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Question")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Polls", (string)null);
+                });
+
+            modelBuilder.Entity("PollBack.Core.PollAggregate.PollOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Option")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PollId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Votes")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PollId");
+
+                    b.ToTable("PollOptions", (string)null);
+                });
+
+            modelBuilder.Entity("PollBack.Core.PollAggregate.PollOptionVote", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("PollOptionId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PollOptionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PollOptionVotes", (string)null);
+                });
+
             modelBuilder.Entity("PollBack.Core.Entities.RefreshToken", b =>
                 {
-                    b.HasOne("PollBack.Core.UserAggregate.User", "User")
+                    b.HasOne("PollBack.Core.Entities.User", "User")
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PollBack.Core.PollAggregate.Poll", b =>
+                {
+                    b.HasOne("PollBack.Core.Entities.User", "User")
+                        .WithMany("Polls")
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -164,14 +200,40 @@ namespace PollBack.Infrastructure.Migrations
                     b.Navigation("Poll");
                 });
 
+            modelBuilder.Entity("PollBack.Core.PollAggregate.PollOptionVote", b =>
+                {
+                    b.HasOne("PollBack.Core.PollAggregate.PollOption", "PollOption")
+                        .WithMany("PollOptionVotes")
+                        .HasForeignKey("PollOptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PollBack.Core.Entities.User", "User")
+                        .WithMany("PollOptionVotes")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("PollOption");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PollBack.Core.Entities.User", b =>
+                {
+                    b.Navigation("PollOptionVotes");
+
+                    b.Navigation("Polls");
+
+                    b.Navigation("RefreshTokens");
+                });
+
             modelBuilder.Entity("PollBack.Core.PollAggregate.Poll", b =>
                 {
                     b.Navigation("Options");
                 });
 
-            modelBuilder.Entity("PollBack.Core.UserAggregate.User", b =>
+            modelBuilder.Entity("PollBack.Core.PollAggregate.PollOption", b =>
                 {
-                    b.Navigation("RefreshTokens");
+                    b.Navigation("PollOptionVotes");
                 });
 #pragma warning restore 612, 618
         }

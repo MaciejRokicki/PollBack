@@ -44,6 +44,7 @@ namespace PollBack.Shared.Data
 
         public virtual async Task<IEnumerable<T>> GetManyAsync(Expression<Func<T, bool>> expression) => await ctxt.Set<T>().Where(expression).ToListAsync();
 
+        //TODO: pomyslec nad update'ami, zeby aktualizowac tylko dane zmienione, a nie wszystkie
         public virtual async Task<T> UpdateAsync(T entity)
         {
             ctxt

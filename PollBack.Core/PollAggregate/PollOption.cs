@@ -5,15 +5,15 @@ namespace PollBack.Core.PollAggregate
 {
     public class PollOption : BaseEntity
     {
+        [JsonIgnore]
         public int PollId { get; set; }
         [JsonIgnore]
         public Poll? Poll { get; set; }
-        public string Option { get; init; }
+        public string? Option { get; init; }
+        [JsonIgnore]
         public int Votes { get; set; }
 
-        public PollOption(string option)
-        {
-            Option = option;
-        }
+        [JsonIgnore]
+        public ICollection<PollOptionVote> PollOptionVotes { get; set; } = new List<PollOptionVote>();
     }
 }

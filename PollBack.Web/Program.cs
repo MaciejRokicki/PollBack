@@ -7,6 +7,7 @@ using MediatR.Extensions.Autofac.DependencyInjection;
 using PollBack.Shared.AppSettings;
 using PollBack.Web.Middlewares;
 using Microsoft.OpenApi.Models;
+using AutoMapper.Contrib.Autofac.DependencyInjection;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -48,12 +49,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.Configure<SecuritySettings>(builder.Configuration.GetSection("SecuritySettings"));
+builder.Services.AddHttpContextAccessor();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 {
     containerBuilder.RegisterMediatR(typeof(Program).Assembly);
+    containerBuilder.RegisterAutoMapper(typeof(Program).Assembly);
 
     containerBuilder.RegisterModule(new InfrastructureModule());
     containerBuilder.RegisterModule(new CoreModule());

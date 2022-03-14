@@ -17,6 +17,11 @@ namespace PollBack.Infrastructure
                 .RegisterType<PollRepository>()
                 .As<IPollRepository>()
                 .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<PollOptionVoteRepository>()
+                .As<IPollOptionVoteRepository>()
+                .InstancePerLifetimeScope();
         }
     }
 }

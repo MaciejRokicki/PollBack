@@ -6,7 +6,6 @@ using PollBack.Core.Exceptions;
 using PollBack.Core.Interfaces.Repositories;
 using PollBack.Core.Interfaces.Services;
 using PollBack.Shared.AppSettings;
-using PollBack.Core.UserAggregate;
 using Microsoft.Extensions.Options;
 
 namespace PollBack.Core.Services
@@ -121,7 +120,11 @@ namespace PollBack.Core.Services
 
             string hash = encryptionService.EncryptBySHA256(signUpRequest.Password);
 
-            user = new(signUpRequest.Email, hash);
+            user = new()
+            {
+                Email = signUpRequest.Email,
+                Password = hash
+            };
 
             await userRepository.CreateAsync(user);
         }

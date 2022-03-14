@@ -1,5 +1,4 @@
-﻿using PollBack.Core.UserAggregate;
-using PollBack.Core.Entities;
+﻿using PollBack.Core.Entities;
 
 namespace PollBack.Core.Interfaces.Services
 {

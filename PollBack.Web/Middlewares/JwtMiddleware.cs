@@ -1,6 +1,5 @@
-﻿using MediatR;
-using PollBack.Core.Interfaces.Services;
-using PollBack.Core.UserAggregate.Queries;
+﻿using PollBack.Core.Interfaces.Services;
+using System.Security.Claims;
 
 namespace PollBack.Web.Middlewares
 {
@@ -8,13 +7,11 @@ namespace PollBack.Web.Middlewares
     {
         private readonly RequestDelegate next;
         private readonly IJwtTokenService jwtTokenService;
-        private readonly IMediator mediator;
 
-        public JwtMiddleware(RequestDelegate next, IJwtTokenService jwtTokenService, IMediator mediator)
+        public JwtMiddleware(RequestDelegate next, IJwtTokenService jwtTokenService)
         {     
             this.next = next;
             this.jwtTokenService = jwtTokenService;
-            this.mediator = mediator;
         }
 
         public async Task Invoke(HttpContext httpContext)
@@ -28,7 +25,12 @@ namespace PollBack.Web.Middlewares
 
             if(userId != null)
             {
-                httpContext.Items["User"] = await mediator.Send(new GetUserByIdQuery(userId.Value));
+                string? strUserId = userId.ToString();
+
+                if(strUserId != null)
+                {
+                    httpContext.User.Identities.FirstOrDefault()?.AddClaim(new Claim("UserId", strUserId));
+                }
             }
 
             await next(httpContext);

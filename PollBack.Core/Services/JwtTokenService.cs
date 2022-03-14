@@ -8,7 +8,6 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using PollBack.Core.Entities;
-using PollBack.Core.UserAggregate;
 
 namespace PollBack.Core.Services
 {
