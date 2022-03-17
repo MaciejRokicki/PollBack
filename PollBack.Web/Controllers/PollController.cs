@@ -18,7 +18,10 @@ namespace PollBack.Web.Controllers
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IMapper mapper;
 
-        public PollController(IMediator mediator, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+        public PollController(
+            IMediator mediator, 
+            IHttpContextAccessor httpContextAccessor, 
+            IMapper mapper)
         {
             this.mediator = mediator;
             this.httpContextAccessor = httpContextAccessor;
