@@ -2,7 +2,7 @@
 {
     public class WrongPollOptionException : Exception
     {
-        public WrongPollOptionException() : base("Wrgon poll option.")
+        public WrongPollOptionException() : base("Wrong poll option.")
         {
         }
     }

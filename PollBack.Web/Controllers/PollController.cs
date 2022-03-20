@@ -75,6 +75,33 @@ namespace PollBack.Web.Controllers
             }
         }
 
+        [JwtAuthorize]
+        [HttpPut("[action]")]
+        public async Task<IActionResult> Update([FromBody] UpdatePollCommand updatePollCommand)
+        {
+            try
+            {
+                string? userId = httpContextAccessor.HttpContext?.User.FindFirstValue("UserId");
+
+                if (userId != null)
+                {
+                    updatePollCommand.UserId = int.Parse(userId);
+
+                    await mediator.Send(updatePollCommand);
+
+                    return Ok();
+                }
+                else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("[action]")]
         public async Task<IActionResult> Get(int id)
         {
@@ -83,9 +110,9 @@ namespace PollBack.Web.Controllers
                 GetPollByIdQuery query = new GetPollByIdQuery(id);
 
                 Poll poll = await mediator.Send(query);
-                PollViewModel pollViewModels = mapper.Map<PollViewModel>(poll);
+                PollViewModel pollViewModel = mapper.Map<PollViewModel>(poll);
 
-                return Ok(pollViewModels);
+                return Ok(pollViewModel);
             }
             catch (Exception ex)
             {

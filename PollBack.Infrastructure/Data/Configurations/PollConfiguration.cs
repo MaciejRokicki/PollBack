@@ -20,8 +20,7 @@ namespace PollBack.Infrastructure.Data.Configurations
                 .IsRequired();
 
             builder
-                .Property(x => x.End)
-                .IsRequired();
+                .Property(x => x.End);
 
             builder
                 .Property(x => x.Question)

@@ -91,6 +91,14 @@ namespace PollBack.Web.Controllers
 
                 await authenticationService.RevokeTokenAsync(token, GetIpAddress());
 
+                CookieOptions cookieOptions = new()
+                {
+                    HttpOnly = true,
+                    Expires = DateTime.UtcNow.AddDays(-1d)
+                };
+
+                Response.Cookies.Append("refreshToken", token, cookieOptions);
+
                 return Ok();
             }
             catch (Exception ex)

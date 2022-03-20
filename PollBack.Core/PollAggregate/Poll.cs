@@ -6,12 +6,12 @@ namespace PollBack.Core.PollAggregate
 {
     public class Poll : BaseEntity
     {
-        [JsonIgnore]
         public int? UserId { get; set; }
         [JsonIgnore]
         public User? User { get; set; }
         public string? Question { get; set; }
         public bool IsDraft { get; set; }
+        [JsonIgnore]
         public DateTime Created { get; init; }
         public DateTime? End { get; set; }
         public ICollection<PollOption> Options { get; set; } = new List<PollOption>();
@@ -19,6 +19,7 @@ namespace PollBack.Core.PollAggregate
         public Poll()
         {
             Created = DateTime.UtcNow;
+            End = null;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace PollBack.Web.FluentValidation.Validators
                 .WithMessage("Te pole nie może być puste.");
 
             RuleFor(x => x.PollOptionIds as List<int>)
-                .Must(x => x.Count > 1)
+                .Must(x => x.Count >= 1)
                 .WithMessage("Musisz wybrać przynajmniej jedną opcję.");
         }
     }

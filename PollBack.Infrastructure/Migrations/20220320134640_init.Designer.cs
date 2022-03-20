@@ -12,7 +12,7 @@ using PollBack.Infrastructure.Data;
 namespace PollBack.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220314134600_init")]
+    [Migration("20220320134640_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,7 @@ namespace PollBack.Infrastructure.Migrations
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2022, 3, 14, 13, 46, 0, 659, DateTimeKind.Utc).AddTicks(574));
+                        .HasDefaultValue(new DateTime(2022, 3, 20, 13, 46, 40, 343, DateTimeKind.Utc).AddTicks(462));
 
                     b.Property<string>("CreatedByIp")
                         .IsRequired()
@@ -103,7 +103,6 @@ namespace PollBack.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("End")
-                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDraft")

@@ -19,6 +19,7 @@ builder.Services.AddControllers().AddFluentValidation(x =>
 {
     x.RegisterValidatorsFromAssemblyContaining<SignInRequestValidator>();
     x.DisableDataAnnotationsValidation = true;
+    x.ImplicitlyValidateChildProperties = true;
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -47,6 +48,18 @@ builder.Services.AddSwaggerGen(x =>
             new string[] { }
         }
     });
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CORS",
+        x =>
+        {
+            x.WithOrigins(builder.Configuration.GetValue<string>("Frontend:url"))
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+        });
 });
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -78,6 +91,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("CORS");
 
 app.UseAuthorization();
 

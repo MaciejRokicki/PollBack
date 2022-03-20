@@ -33,7 +33,7 @@ namespace PollBack.Infrastructure.Migrations
                     Question = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsDraft = table.Column<bool>(type: "bit", nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    End = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    End = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -54,7 +54,7 @@ namespace PollBack.Infrastructure.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Expires = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2022, 3, 14, 13, 46, 0, 659, DateTimeKind.Utc).AddTicks(574)),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2022, 3, 20, 13, 46, 40, 343, DateTimeKind.Utc).AddTicks(462)),
                     CreatedByIp = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Revoked = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RevokedByIp = table.Column<string>(type: "nvarchar(max)", nullable: true),
