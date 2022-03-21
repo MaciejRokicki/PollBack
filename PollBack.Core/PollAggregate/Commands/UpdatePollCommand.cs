@@ -8,10 +8,14 @@ namespace PollBack.Core.PollAggregate.Commands
         [JsonIgnore]
         public int UserId { get; set; }
         public Poll Model { get; }
+        public string? EndOption { get; set; }
 
-        public UpdatePollCommand(Poll model)
+        public UpdatePollCommand(Poll model, string endOption)
         {
             this.Model = model;
+            this.EndOption = endOption;
+
+            model.End = EndOption == null ? null : model.Created.AddMinutes(EndDateSetter.EndDates[EndOption]);
         }
     }
 }

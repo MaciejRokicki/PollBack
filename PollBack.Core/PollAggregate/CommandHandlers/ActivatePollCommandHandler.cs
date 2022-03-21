@@ -21,6 +21,14 @@ namespace PollBack.Core.PollAggregate.CommandHandlers
             if (poll == null)
                 throw new PollNotFoundException();
 
+            if(poll.End != null)
+            {
+                TimeSpan? x = poll.End - poll.Created;
+
+                poll.Created = DateTime.UtcNow;
+                poll.End = poll.Created.Add(x.Value);
+            }
+
             poll.IsDraft = false;
 
             await pollRepository.UpdateAsync(poll);

@@ -12,14 +12,13 @@ namespace PollBack.Core.PollAggregate
         public string? Question { get; set; }
         public bool IsDraft { get; set; }
         [JsonIgnore]
-        public DateTime Created { get; init; }
+        public DateTime Created { get; set; }
         public DateTime? End { get; set; }
         public ICollection<PollOption> Options { get; set; } = new List<PollOption>();
 
         public Poll()
         {
             Created = DateTime.UtcNow;
-            End = null;
         }
     }
 }
