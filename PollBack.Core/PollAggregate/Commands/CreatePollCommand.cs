@@ -4,10 +4,10 @@ namespace PollBack.Core.PollAggregate.Commands
 {
     public class CreatePollCommand : IRequest<Poll>
     {
-        public Poll Model { get; }
+        public Poll Model { get; set; }
         public string? EndOption { get; set; }
 
-        public CreatePollCommand(Poll model, string endOption)
+        public CreatePollCommand(Poll model, string? endOption)
         {
             this.Model = model;
             this.EndOption = endOption;
