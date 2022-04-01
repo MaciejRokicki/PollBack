@@ -2,17 +2,12 @@
 using PollBack.Core.Interfaces.Repositories;
 using System.Threading.Tasks;
 using Xunit;
-using System;
 using PollBack.Core.PollAggregate.Commands;
 using PollBack.Core.PollAggregate.CommandHandlers;
 using PollAggregate = PollBack.Core.PollAggregate;
-using System.Collections.Generic;
 using Shouldly;
-using PollBack.Core.PollAggregate;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
-using System.Linq;
 using System.Threading;
+using UnitTests.DataProviders;
 
 namespace UnitTests.Poll
 {
@@ -25,93 +20,35 @@ namespace UnitTests.Poll
         {
             CreatePollCommandHandler? handler = new(pollRepository.Object);
 
-            DateTime dateTime = DateTime.UtcNow;
-
-            PollAggregate.Poll poll = new()
-            {
-                Id = 1,
-                Created = dateTime,
-                End = null,
-                IsDraft = false,
-                Question = " Pytanie - test",
-                Options = new List<PollOption>()
-                {
-                    new()
-                    {
-                        Id = 1,
-                        Option = " Opcja1",
-                        PollId = 1
-                    },
-                    new()
-                    {
-                        Id = 2,
-                        Option = " Opcja2",
-                        PollId = 1
-                    }
-                },
-                User = null,
-                UserId = null
-            };
-
             pollRepository
                 .Setup(x => x.CreateAsync(It.IsAny<PollAggregate.Poll>()))
-                .Returns(Task.FromResult(poll));
+                .Returns(Task.FromResult(CreatePollDataProvider.polls["CreatePollWithoutEndDateAndWithoutUser"].responsePoll));
 
-            Task<PollAggregate.Poll> response = handler.Handle(new CreatePollCommand(poll, null), CancellationToken.None);
+            Task<PollAggregate.Poll> response = handler.Handle(
+                new CreatePollCommand(
+                    CreatePollDataProvider.polls["CreatePollWithoutEndDateAndWithoutUser"].testPoll, 
+                    null),
+                CancellationToken.None);
 
-            AssertPoll(response, poll);
+            AssertPoll(CreatePollDataProvider.polls["CreatePollWithoutEndDateAndWithoutUser"].testPoll, response.Result);
         }
 
         [Fact]
         public void CreatePollWithoutEndDateAndWithUser()
         {
-            Mock<IHttpContextAccessor> httpContextAccessor = new();
-            DefaultHttpContext? context = new();
-
-            context.User.Identities.First().AddClaim(new Claim("UserId", "10"));
-
-            httpContextAccessor
-                .Setup(x => x.HttpContext)
-                .Returns(context);
-
             CreatePollCommandHandler? handler = new(pollRepository.Object);
-
-            DateTime dateTime = DateTime.UtcNow;
-            string? userId = httpContextAccessor.Object.HttpContext?.User.FindFirst("UserId")?.Value;
-
-            PollAggregate.Poll poll = new()
-            {
-                Id = 1,
-                Created = dateTime,
-                End = null,
-                IsDraft = false,
-                Question = " Pytanie - test",
-                Options = new List<PollOption>()
-                {
-                    new()
-                    {
-                        Id = 1,
-                        Option = " Opcja1",
-                        PollId = 1
-                    },
-                    new()
-                    {
-                        Id = 2,
-                        Option = " Opcja2",
-                        PollId = 1
-                    }
-                },
-                User = null,
-                UserId = userId != null ? int.Parse(userId) : null
-            };
 
             pollRepository.Setup(x =>
                 x.CreateAsync(It.IsAny<PollAggregate.Poll>()))
-                    .Returns(Task.FromResult(poll));
+                    .Returns(Task.FromResult(CreatePollDataProvider.polls["CreatePollWithoutEndDateAndWithUser"].responsePoll));
 
-            Task<PollAggregate.Poll> response = handler.Handle(new CreatePollCommand(poll, null), CancellationToken.None);
+            Task<PollAggregate.Poll> response = handler.Handle(
+                new CreatePollCommand(
+                    CreatePollDataProvider.polls["CreatePollWithoutEndDateAndWithUser"].testPoll, 
+                    null), 
+                CancellationToken.None);
 
-            AssertPoll(response, poll);
+            AssertPoll(CreatePollDataProvider.polls["CreatePollWithoutEndDateAndWithUser"].testPoll, response.Result);
         }
 
         [Fact]
@@ -119,132 +56,76 @@ namespace UnitTests.Poll
         {
             CreatePollCommandHandler? handler = new(pollRepository.Object);
 
-            DateTime dateTime = DateTime.UtcNow;
-
-            PollAggregate.Poll poll = new()
-            {
-                Id = 1,
-                Created = dateTime,
-                End = null,
-                IsDraft = false,
-                Question = " Pytanie - test",
-                Options = new List<PollOption>()
-                {
-                    new()
-                    {
-                        Id = 1,
-                        Option = " Opcja1",
-                        PollId = 1
-                    },
-                    new()
-                    {
-                        Id = 2,
-                        Option = " Opcja2",
-                        PollId = 1
-                    }
-                },
-                User = null,
-                UserId = null
-            };
-
             pollRepository
                 .Setup(x => x.CreateAsync(It.IsAny<PollAggregate.Poll>()))
-                .Returns(Task.FromResult(poll));
+                .Returns(Task.FromResult(CreatePollDataProvider.polls["CreatePollWithEndDateAndWithoutUser"].responsePoll));
 
-            Task<PollAggregate.Poll> response = handler.Handle(new CreatePollCommand(poll, "1"), CancellationToken.None);
+            Task<PollAggregate.Poll> response = handler.Handle(
+                new CreatePollCommand(
+                    CreatePollDataProvider.polls["CreatePollWithEndDateAndWithoutUser"].testPoll, 
+                    "1"), 
+                CancellationToken.None);
 
-            AssertPoll(response, poll);
+            AssertPoll(CreatePollDataProvider.polls["CreatePollWithEndDateAndWithoutUser"].testPoll, response.Result);
+
+            response.Result
+                .End
+                .ShouldNotBeNull()
+                .ShouldBeGreaterThan(CreatePollDataProvider.polls["CreatePollWithEndDateAndWithoutUser"].testPoll.Created);
         }
 
         [Fact]
         public void CreatePollWithEndDateAndWithUser()
         {
-            Mock<IHttpContextAccessor> httpContextAccessor = new();
-            DefaultHttpContext? context = new();
-
-            context.User.Identities.First().AddClaim(new Claim("UserId", "10"));
-
-            httpContextAccessor
-                .Setup(x => x.HttpContext)
-                .Returns(context);
-
             CreatePollCommandHandler? handler = new(pollRepository.Object);
-
-            DateTime dateTime = DateTime.UtcNow;
-            string? userId = httpContextAccessor.Object.HttpContext?.User.FindFirst("UserId")?.Value;
-
-            PollAggregate.Poll poll = new()
-            {
-                Id = 1,
-                Created = dateTime,
-                End = null,
-                IsDraft = false,
-                Question = " Pytanie - test",
-                Options = new List<PollOption>()
-                {
-                    new()
-                    {
-                        Id = 1,
-                        Option = " Opcja1",
-                        PollId = 1
-                    },
-                    new()
-                    {
-                        Id = 2,
-                        Option = " Opcja2",
-                        PollId = 1
-                    }
-                },
-                User = null,
-                UserId = userId != null ? int.Parse(userId) : null
-            };
 
             pollRepository.Setup(x =>
                 x.CreateAsync(It.IsAny<PollAggregate.Poll>()))
-                    .Returns(Task.FromResult(poll));
+                    .Returns(Task.FromResult(CreatePollDataProvider.polls["CreatePollWithEndDateAndWithUser"].responsePoll));
 
-            Task<PollAggregate.Poll> response = handler.Handle(new CreatePollCommand(poll, "2"), CancellationToken.None);
+            Task<PollAggregate.Poll> response = handler.Handle(
+                new CreatePollCommand(
+                    CreatePollDataProvider.polls["CreatePollWithEndDateAndWithUser"].testPoll,
+                    "4"),
+                CancellationToken.None);
 
-            AssertPoll(response, poll);
+            AssertPoll(CreatePollDataProvider.polls["CreatePollWithEndDateAndWithUser"].testPoll, response.Result);
+
+            response.Result
+                .End
+                .ShouldNotBeNull()
+                .ShouldBeGreaterThan(CreatePollDataProvider.polls["CreatePollWithEndDateAndWithUser"].testPoll.Created);
         }
 
-        private void AssertPoll(Task<PollAggregate.Poll> response, PollAggregate.Poll actual)
+        private void AssertPoll(PollAggregate.Poll testPoll, PollAggregate.Poll responsePoll)
         {
-            response
-                .Result.Id
-                .ShouldBe(actual.Id);
+            responsePoll
+                .Id
+                .ShouldBe(testPoll.Id);
 
-            response
-                .Result.Created
-                .ShouldBe(actual.Created);
+            responsePoll
+                .IsDraft
+                .ShouldBe(testPoll.IsDraft);
 
-            response
-                .Result.End
-                .ShouldBe(actual.End);
+            responsePoll
+                .Question
+                .ShouldBe(testPoll.Question);
 
-            response
-                .Result.IsDraft
-                .ShouldBe(actual.IsDraft);
+            responsePoll
+                .Options.Count
+                .ShouldBe(testPoll.Options.Count);
 
-            response
-                .Result.Question
-                .ShouldBe(actual.Question);
+            responsePoll
+                .UserId
+                .ShouldBe(testPoll.UserId);
 
-            response
-                .Result.Options.Count
-                .ShouldBe(actual.Options.Count);
+            responsePoll
+                .User?.Id.ToString()
+                .ShouldBe(testPoll.User?.Id.ToString());
 
-            response
-                .Result.UserId
-                .ShouldBe(actual.UserId);
-
-            response
-                .Result.User?.Id.ToString()
-                .ShouldBe(actual.User?.Id.ToString());
-
-            response
-                .Result.User?.Email
-                .ShouldBe(actual.User?.Email);
+            responsePoll
+                .User?.Email
+                .ShouldBe(testPoll.User?.Email);
         }
     }
 }

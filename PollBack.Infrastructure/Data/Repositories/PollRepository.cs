@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PollBack.Core.Entities;
 using PollBack.Core.Interfaces.Repositories;
 using PollBack.Core.PollAggregate;
 using PollBack.Shared.Data;

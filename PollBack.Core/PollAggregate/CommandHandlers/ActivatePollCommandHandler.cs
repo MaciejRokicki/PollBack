@@ -5,7 +5,7 @@ using PollBack.Core.PollAggregate.Commands;
 
 namespace PollBack.Core.PollAggregate.CommandHandlers
 {
-    public class ActivatePollCommandHandler : IRequestHandler<ActivatePollCommand, Unit>
+    public class ActivatePollCommandHandler : IRequestHandler<ActivatePollCommand, Poll>
     {
         private readonly IPollRepository pollRepository;
 
@@ -14,7 +14,7 @@ namespace PollBack.Core.PollAggregate.CommandHandlers
             this.pollRepository = pollRepository;
         }
 
-        public async Task<Unit> Handle(ActivatePollCommand request, CancellationToken cancellationToken)
+        public async Task<Poll> Handle(ActivatePollCommand request, CancellationToken cancellationToken)
         {
             Poll? poll = await pollRepository.GetAsync(x => x.Id == request.PollId && x.UserId == request.UserId && x.IsDraft);
 
@@ -31,9 +31,9 @@ namespace PollBack.Core.PollAggregate.CommandHandlers
 
             poll.IsDraft = false;
 
-            await pollRepository.UpdateAsync(poll);
+            poll = await pollRepository.UpdateAsync(poll);
 
-            return Unit.Value;
+            return poll;
         }
     }
 }

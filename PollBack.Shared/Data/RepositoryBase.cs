@@ -44,7 +44,7 @@ namespace PollBack.Shared.Data
 
         public virtual async Task<IEnumerable<T>> GetManyAsync(Expression<Func<T, bool>> expression) => await ctxt.Set<T>().Where(expression).ToListAsync();
 
-        //TODO: pomyslec nad update'ami, zeby aktualizowac tylko dane zmienione, a nie wszystkie
+        //TODO: pomyslec nad update'ami, zeby SQL aktualizowal zmienione pola, a nie wszystkie
         public virtual async Task<T> UpdateAsync(T entity)
         {
             ctxt
@@ -54,27 +54,6 @@ namespace PollBack.Shared.Data
             await ctxt.SaveChangesAsync();
 
             return entity;
-        }
-
-        //TODO: sprawdzic czy sie to przyda
-        public virtual async Task<T?> UpdateAsync(Expression<Func<T, bool>> expression, T entity)
-        {
-            T? obj = await GetAsync(expression);
-
-            if(obj != null)
-            {
-                entity.Id = obj.Id;
-
-                ctxt
-                    .Set<T>()
-                    .Update(entity);
-
-                await ctxt.SaveChangesAsync();
-
-                return entity;
-            }
-
-            return null;
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace PollBack.Core.PollAggregate.Commands
 {
-    public class ActivatePollCommand : IRequest
+    public class ActivatePollCommand : IRequest<Poll>
     {
         [JsonIgnore]
         public int UserId { get; set; }

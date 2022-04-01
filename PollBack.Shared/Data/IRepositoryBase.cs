@@ -9,7 +9,6 @@ namespace PollBack.Shared.Data
         Task<IEnumerable<T>> GetManyAsync(Expression<Func<T, bool>> expression);
         Task<T> CreateAsync(T entity);
         Task<T> UpdateAsync(T entity);
-        Task<T?> UpdateAsync(Expression<Func<T, bool>> expression, T entity);
         Task DeleteAsync(Expression<Func<T, bool>> expression);
     }
 }
