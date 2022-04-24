@@ -21,6 +21,9 @@ namespace PollBack.Core.PollAggregate.CommandHandlers
             if (poll == null)
                 throw new PollNotFoundException();
 
+            if (!poll.IsDraft)
+                throw new NonDraftStatePollException();
+
             poll.Question = request.Model.Question;
             poll.Options = request.Model.Options;
             poll.End = request.EndOption == null ? null : poll.Created.AddMinutes(EndDateSetter.EndDates[request.EndOption]);

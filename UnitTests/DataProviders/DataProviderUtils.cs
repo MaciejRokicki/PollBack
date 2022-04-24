@@ -16,6 +16,17 @@ namespace UnitTests.DataProviders
             };
         }
 
+        internal static PollOption CreatePollOption(int id, int pollId, string? option, int votes)
+        {
+            return new PollOption()
+            {
+                Id = id,
+                PollId = pollId,
+                Option = option,
+                Votes = votes
+            };
+        }
+
         internal static PollAggregate.Poll CreatePoll(
             int id,
             int? userId,
