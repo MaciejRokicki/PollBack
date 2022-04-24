@@ -15,7 +15,7 @@ namespace PollBack.Core.PollAggregate.Commands
             this.Model = model;
             this.EndOption = endOption;
 
-            model.End = EndOption == null ? null : model.Created.AddMinutes(EndDateSetter.EndDates[EndOption]);
+            model.End = EndOption == null || EndOption == "0" ? null : model.Created.AddMinutes(EndDateSetter.EndDates[EndOption]);
         }
     }
 }

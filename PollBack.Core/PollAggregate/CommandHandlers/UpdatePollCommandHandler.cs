@@ -26,7 +26,7 @@ namespace PollBack.Core.PollAggregate.CommandHandlers
 
             poll.Question = request.Model.Question;
             poll.Options = request.Model.Options;
-            poll.End = request.EndOption == null ? null : poll.Created.AddMinutes(EndDateSetter.EndDates[request.EndOption]);
+            poll.End = request.EndOption == null || request.EndOption == "0" ? null : poll.Created.AddMinutes(EndDateSetter.EndDates[request.EndOption]);
 
             Poll? data = await pollRepository.UpdateAsync(poll);
 
