@@ -77,5 +77,20 @@ namespace UnitTests.Poll
             response.Status
                 .ShouldBe(TaskStatus.Faulted);
         }
+
+        [Fact]
+        public void VoteEndDateExpiredPoll()
+        {
+            VotePollCommandHandler? handler = new(pollRepository.Object, pollOptionVoteRepository.Object);
+
+            pollRepository
+                .Setup(x => x.GetAsync(It.IsAny<Expression<Func<PollAggregate.Poll, bool>>>()))
+                .Returns(Task.FromResult((PollAggregate.Poll?)VotePollDataProvider.polls["VoteEndDateExpiredPoll"].testPoll));
+
+            Task response = handler.Handle(new VotePollCommand() { UserId = null, PollId = 1, PollOptionIds = new int[] { 1, 2 } }, CancellationToken.None);
+
+            response.Status
+                .ShouldBe(TaskStatus.Faulted);
+        }
     }
 }

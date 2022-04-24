@@ -20,36 +20,31 @@ namespace PollBack.Core.PollAggregate.CommandHandlers
         {
             Poll? poll = await pollRepository.GetAsync(x => x.Id == request.PollId);
 
-            if(poll != null)
-            {
-                if(!poll.IsDraft)
-                {
-                    List<PollOptionVote> pollOptionsVotes = new();
-                    List<int> pollOptionIds = poll.Options.Select(x => x.Id).ToList();
-
-                    foreach (int id in request.PollOptionIds)
-                    {
-                        if (!pollOptionIds.Contains(id))
-                            throw new WrongPollOptionException();
-
-                        pollOptionsVotes.Add(new PollOptionVote()
-                        {
-                            UserId = request.UserId,
-                            PollOptionId = id
-                        });
-                    }
-
-                    await pollOptionVoteRepository.CreateRangeAsync(pollOptionsVotes);
-                }
-                else
-                {
-                    throw new DraftStatePollException();
-                }
-            }
-            else
-            {
+            if(poll == null)
                 throw new PollNotFoundException();
+
+            if(poll.IsDraft)
+                throw new DraftStatePollException();
+
+            if (poll.End != null && DateTime.UtcNow > poll.End)
+                throw new PollEndDateExpiredException();
+
+            List<PollOptionVote> pollOptionsVotes = new();
+            List<int> pollOptionIds = poll.Options.Select(x => x.Id).ToList();
+
+            foreach (int id in request.PollOptionIds)
+            {
+                if (!pollOptionIds.Contains(id))
+                    throw new WrongPollOptionException();
+
+                pollOptionsVotes.Add(new PollOptionVote()
+                {
+                    UserId = request.UserId,
+                    PollOptionId = id
+                });
             }
+
+            await pollOptionVoteRepository.CreateRangeAsync(pollOptionsVotes);
 
             return Unit.Value;
         }

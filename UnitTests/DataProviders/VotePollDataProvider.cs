@@ -1,4 +1,5 @@
 ﻿using PollBack.Core.PollAggregate;
+using System;
 using System.Collections.Generic;
 using PollAggregate = PollBack.Core.PollAggregate;
 
@@ -38,6 +39,29 @@ namespace UnitTests.DataProviders
                 (
                     DataProviderUtils.CreatePoll(1, null, "Pytanie - test", true, null, new PollOption[] { pollOptions[0], pollOptions[1], pollOptions[2], pollOptions[3] }),
                     DataProviderUtils.CreatePoll(1, null, "Pytanie - test", true, null, new PollOption[] { pollOptions[4], pollOptions[1], pollOptions[5], pollOptions[3] })
+                )
+            },
+            {
+                "VoteEndDateExpiredPoll",
+                (
+                    new PollAggregate.Poll()
+                    {
+                        Id = 1,
+                        UserId = null,
+                        Question = "Pytanie - test",
+                        IsDraft = false,
+                        End = DateTime.UtcNow.AddDays(-1),
+                        Options = new PollOption[] { pollOptions[0], pollOptions[1], pollOptions[2], pollOptions[3] }
+                    },
+                    new PollAggregate.Poll()
+                    {
+                        Id = 1,
+                        UserId = null,
+                        Question = "Pytanie - test",
+                        IsDraft = false,
+                        End = DateTime.UtcNow.AddDays(-1),
+                        Options = new PollOption[] { pollOptions[0], pollOptions[1], pollOptions[2], pollOptions[3] }
+                    }
                 )
             },
         };
