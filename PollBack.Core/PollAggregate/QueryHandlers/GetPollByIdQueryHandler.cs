@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using PollBack.Core.Exceptions;
 using PollBack.Core.Interfaces.Repositories;
 using PollBack.Core.PollAggregate.Queries;
 
@@ -16,6 +17,9 @@ namespace PollBack.Core.PollAggregate.QueryHandlers
         public async Task<Poll?> Handle(GetPollByIdQuery request, CancellationToken cancellationToken)
         {
             Poll? poll = await pollRepository.GetAsync(x => x.Id == request.PollId);
+
+            if (poll == null)
+                throw new PollNotFoundException();
 
             return poll;
         }
