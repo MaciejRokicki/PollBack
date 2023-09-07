@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using PollBack.Core.PollAggregate.Commands;
 
-namespace PollBack.Web.FluentValidation.Validators
+namespace PollBack.Core.Validators
 {
     public class VotePollCommandValidator : AbstractValidator<VotePollCommand>
     {

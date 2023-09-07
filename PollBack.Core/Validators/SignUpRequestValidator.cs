@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 using PollBack.Core.Models;
 
-namespace PollBack.Web.FluentValidation.Validators
+namespace PollBack.Core.Validators
 {
-    public class SignInRequestValidator : AbstractValidator<SignInRequest>
+    public class SignUpRequestValidator : AbstractValidator<SignUpRequest>
     {
-        public SignInRequestValidator()
+        public SignUpRequestValidator()
         {
             RuleFor(x => x.Email)
                 .NotEmpty()

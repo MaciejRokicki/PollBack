@@ -8,7 +8,7 @@ using PollBack.Shared.AppSettings;
 using PollBack.Web.Middlewares;
 using Microsoft.OpenApi.Models;
 using AutoMapper.Contrib.Autofac.DependencyInjection;
-using PollBack.Web.FluentValidation.Validators;
+using PollBack.Core.Validators;
 using FluentValidation.AspNetCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -21,6 +21,7 @@ builder.Services.AddControllers().AddFluentValidation(x =>
     x.DisableDataAnnotationsValidation = true;
     x.ImplicitlyValidateChildProperties = true;
 });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(x =>

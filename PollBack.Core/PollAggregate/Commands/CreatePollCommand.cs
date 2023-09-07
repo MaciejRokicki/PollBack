@@ -9,10 +9,8 @@ namespace PollBack.Core.PollAggregate.Commands
 
         public CreatePollCommand(Poll model, string? endOption)
         {
-            this.Model = model;
-            this.EndOption = endOption;
-
-            model.End = EndOption == null || EndOption == "0" ? null : model.Created.AddMinutes(EndDateSetter.EndDates[EndOption]);
+            Model = model;
+            EndOption = endOption;
         }
     }
 }
