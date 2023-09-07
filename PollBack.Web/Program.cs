@@ -1,15 +1,15 @@
-using Microsoft.EntityFrameworkCore;
-using PollBack.Infrastructure.Data;
 using Autofac;
-using PollBack.Infrastructure;
 using Autofac.Extensions.DependencyInjection;
-using MediatR.Extensions.Autofac.DependencyInjection;
-using PollBack.Shared.AppSettings;
-using PollBack.Web.Middlewares;
-using Microsoft.OpenApi.Models;
 using AutoMapper.Contrib.Autofac.DependencyInjection;
-using PollBack.Core.Validators;
 using FluentValidation.AspNetCore;
+using MediatR.Extensions.Autofac.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using PollBack.Core.AppSettings;
+using PollBack.Core.Validators;
+using PollBack.Infrastructure;
+using PollBack.Infrastructure.Data;
+using PollBack.Web.Middlewares;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +37,7 @@ builder.Services.AddSwaggerGen(x =>
     });
     x.AddSecurityRequirement(new OpenApiSecurityRequirement()
     {
-        { 
+        {
             new OpenApiSecurityScheme()
             {
                 Reference = new OpenApiReference()
@@ -45,7 +45,7 @@ builder.Services.AddSwaggerGen(x =>
                     Id = "Bearer",
                     Type = ReferenceType.SecurityScheme
                 }
-            }, 
+            },
             new string[] { }
         }
     });
@@ -68,7 +68,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DbConntectionString"));
 });
 
-builder.Services.Configure<SecuritySettings>(builder.Configuration.GetSection("SecuritySettings"));
+builder.Services.Configure<SecuritySettings>(builder.Configuration.GetSection(SecuritySettings.Name));
 builder.Services.AddHttpContextAccessor();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
