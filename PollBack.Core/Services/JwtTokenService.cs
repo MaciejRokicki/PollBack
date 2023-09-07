@@ -2,12 +2,12 @@
 using Microsoft.IdentityModel.Tokens;
 using PollBack.Core.Interfaces.Repositories;
 using PollBack.Core.Interfaces.Services;
-using PollBack.Shared.AppSettings;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using PollBack.Core.Entities;
+using PollBack.Core.AppSettings;
 
 namespace PollBack.Core.Services
 {

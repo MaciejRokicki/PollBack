@@ -9,7 +9,7 @@ namespace PollBack.Core.PollAggregate
         public int PollId { get; set; }
         [JsonIgnore]
         public Poll? Poll { get; set; }
-        public string? Option { get; init; }
+        public string Option { get; init; } = string.Empty;
         [JsonIgnore]
         public int Votes { get; set; }
 
