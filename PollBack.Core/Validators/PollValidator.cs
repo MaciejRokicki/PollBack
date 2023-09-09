@@ -2,7 +2,7 @@
 using PollBack.Core.PollAggregate;
 using PollBack.Core.PollAggregate.Commands;
 
-namespace PollBack.Web.FluentValidation.Validators
+namespace PollBack.Core.Validators
 {
     public class PollValidator : AbstractValidator<CreatePollCommand>
     {
@@ -17,6 +17,10 @@ namespace PollBack.Web.FluentValidation.Validators
                 .WithMessage("Te pole nie może być puste.")
                 .Must(x => x.Count >= 2)
                 .WithMessage("Musisz podać minimum 2 opcje do wyboru.");
+
+            RuleFor(x => x.EndOption)
+                .Must(x => !string.IsNullOrEmpty(x) && (x == "0" || EndDateSetter.EndDates.ContainsKey(x)))
+                .WithMessage("Te pole nie może być puste lub podano nieprawidłow");
 
             RuleForEach(x => x.Model.Options)
                 .SetValidator(new PollOptionValidator());

@@ -9,7 +9,7 @@ namespace PollBack.Core.PollAggregate
         public int? UserId { get; set; }
         [JsonIgnore]
         public User? User { get; set; }
-        public string? Question { get; set; }
+        public string Question { get; set; } = string.Empty;
         public bool IsDraft { get; set; }
         [JsonIgnore]
         public DateTime Created { get; set; }

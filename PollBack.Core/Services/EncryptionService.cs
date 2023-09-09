@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
+using PollBack.Core.AppSettings;
 using PollBack.Core.Interfaces.Services;
-using PollBack.Shared.AppSettings;
 using System.Security.Cryptography;
 using System.Text;
 

@@ -1,89 +1,25 @@
-using Microsoft.EntityFrameworkCore;
-using PollBack.Infrastructure.Data;
-using Autofac;
-using PollBack.Infrastructure;
 using Autofac.Extensions.DependencyInjection;
-using MediatR.Extensions.Autofac.DependencyInjection;
-using PollBack.Shared.AppSettings;
+using PollBack.Web.IoC;
 using PollBack.Web.Middlewares;
-using Microsoft.OpenApi.Models;
-using AutoMapper.Contrib.Autofac.DependencyInjection;
-using PollBack.Web.FluentValidation.Validators;
-using FluentValidation.AspNetCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddControllers();
+builder.RegisterFluentValidation();
+builder.RegisterSwagger();
 
-builder.Services.AddControllers().AddFluentValidation(x =>
-{
-    x.RegisterValidatorsFromAssemblyContaining<SignInRequestValidator>();
-    x.DisableDataAnnotationsValidation = true;
-    x.ImplicitlyValidateChildProperties = true;
-});
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(x =>
-{
-    x.SwaggerDoc("v1", new OpenApiInfo { Title = "title", Version = "v1" });
-    x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-    {
-        In = ParameterLocation.Header,
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        BearerFormat = "JWT",
-        Scheme = "Bearer"
-    });
-    x.AddSecurityRequirement(new OpenApiSecurityRequirement()
-    {
-        { 
-            new OpenApiSecurityScheme()
-            {
-                Reference = new OpenApiReference()
-                {
-                    Id = "Bearer",
-                    Type = ReferenceType.SecurityScheme
-                }
-            }, 
-            new string[] { }
-        }
-    });
-});
+builder.RegisterCors();
+builder.RegisterDbContexts();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("CORS",
-        x =>
-        {
-            x.WithOrigins(builder.Configuration.GetValue<string>("Frontend:url"))
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
-        });
-});
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DbConntectionString"));
-});
-
-builder.Services.Configure<SecuritySettings>(builder.Configuration.GetSection("SecuritySettings"));
+builder.RegisterConfiguration();
 builder.Services.AddHttpContextAccessor();
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
-builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
-{
-    containerBuilder.RegisterMediatR(typeof(Program).Assembly);
-    containerBuilder.RegisterAutoMapper(typeof(Program).Assembly);
-
-    containerBuilder.RegisterModule(new InfrastructureModule());
-    containerBuilder.RegisterModule(new CoreModule());
-});
+builder.RegisterAutofac();
 
 WebApplication app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

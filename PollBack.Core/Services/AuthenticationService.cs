@@ -1,12 +1,12 @@
 ﻿//https://jasonwatmore.com/post/2022/01/24/net-6-jwt-authentication-with-refresh-tokens-tutorial-with-example-api
 
+using Microsoft.Extensions.Options;
 using PollBack.Core.Models;
 using PollBack.Core.Entities;
 using PollBack.Core.Exceptions;
 using PollBack.Core.Interfaces.Repositories;
 using PollBack.Core.Interfaces.Services;
-using PollBack.Shared.AppSettings;
-using Microsoft.Extensions.Options;
+using PollBack.Core.AppSettings;
 
 namespace PollBack.Core.Services
 {

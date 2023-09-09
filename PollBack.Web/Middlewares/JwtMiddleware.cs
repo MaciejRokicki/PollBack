@@ -34,7 +34,6 @@ namespace PollBack.Web.Middlewares
             }
 
             await next(httpContext);
-
         }
     }
 }
