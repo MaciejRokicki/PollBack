@@ -2,7 +2,7 @@
 {
     public class SecuritySettings
     {
-        public static string Name = "SecuritySettings";
+        public static string Name = nameof(SecuritySettings);
         public string Secret { get; set; } = String.Empty;
         public string Salt { get; set; } = String.Empty;
         public int RefeshTokenDaysLive { get; set; }
